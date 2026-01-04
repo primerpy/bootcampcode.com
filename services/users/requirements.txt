@@ -58,6 +58,10 @@ markupsafe==3.0.3
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
+psycopg==3.2.3
+    # via -r services/users/requirements.in
+psycopg-binary==3.2.3
+    # via psycopg
 pydantic==2.12.5
     # via
     #   fastapi
@@ -96,6 +100,8 @@ sentry-sdk==2.48.0
     # via fastapi-cloud-cli
 shellingham==1.5.4
     # via typer
+sqlalchemy==2.0.36
+    # via -r services/users/requirements.in
 starlette==0.50.0
     # via fastapi
 typer==0.21.0
@@ -106,10 +112,12 @@ typing-extensions==4.15.0
     # via
     #   anyio
     #   fastapi
+    #   psycopg
     #   pydantic
     #   pydantic-core
     #   pydantic-extra-types
     #   rich-toolkit
+    #   sqlalchemy
     #   starlette
     #   typer
     #   typing-inspection

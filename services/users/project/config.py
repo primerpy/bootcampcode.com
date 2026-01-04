@@ -8,6 +8,7 @@ from pydantic_settings import BaseSettings
 class BaseConfig(BaseSettings):
     TESTING: bool = False
     ENVIRONMENT: str = "dev"
+    DATABASE_URL: str = os.environ.get("DATABASE_URL")
 
 
 class DevelopmentConfig(BaseConfig):
@@ -16,6 +17,7 @@ class DevelopmentConfig(BaseConfig):
 
 class TestingConfig(BaseConfig):
     TESTING: bool = True
+    DATABASE_URL: str = os.environ.get("DATABASE_TEST_URL")
 
 
 class ProductionConfig(BaseConfig):
