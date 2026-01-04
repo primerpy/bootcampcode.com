@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 
-from project.config import DevelopmentConfig
+from project.config import get_settings
 
 app = FastAPI()
 
-
-settings = DevelopmentConfig()
+settings = get_settings()
 
 
 @app.get("/users/ping")
@@ -13,5 +12,6 @@ async def users_ping():
     return {
         "status": "success",
         "message": "pong!",
-        "debug": settings.TESTING,
+        "environment": settings.ENVIRONMENT,
+        "testing": settings.TESTING,
     }

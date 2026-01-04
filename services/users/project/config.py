@@ -1,25 +1,31 @@
+# services/users/project/config.py
+
+import os
+
 from pydantic_settings import BaseSettings
 
 
 class BaseConfig(BaseSettings):
-    """Base configuration"""
-
     TESTING: bool = False
+    ENVIRONMENT: str = "dev"
 
 
 class DevelopmentConfig(BaseConfig):
-    """Development configuration"""
-
     pass
 
 
 class TestingConfig(BaseConfig):
-    """Testing configuration"""
-
     TESTING: bool = True
 
 
 class ProductionConfig(BaseConfig):
-    """Production configuration"""
-
     pass
+
+
+def get_settings():
+    env = os.getenv("ENVIRONMENT", "dev")
+    if env == "prod":
+        return ProductionConfig()
+    elif env == "test":
+        return TestingConfig()
+    return DevelopmentConfig()

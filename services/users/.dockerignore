@@ -1,0 +1,15 @@
+# File: services/users/.dockerignore
+
+# Git and IDE files
+.git
+.idea/
+.vscode/
+
+# Python virtual environment and cache
+.venv
+__pycache__/
+
+# Docker files
+.dockerignore
+Dockerfile
+Dockerfile-prod

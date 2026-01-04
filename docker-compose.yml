@@ -1,0 +1,13 @@
+# File: docker-compose.yml
+
+services:
+  users:
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile
+    volumes:
+      - "./services/users:/usr/src/app"
+    ports:
+      - "8001:8000"
+    environment:
+      - ENVIRONMENT=dev
