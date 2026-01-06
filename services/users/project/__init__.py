@@ -1,14 +1,12 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
-from project.config import get_settings
+from project.config import BaseConfig, get_settings
 
 app = FastAPI()
 
-settings = get_settings()
-
 
 @app.get("/users/ping")
-async def users_ping():
+async def users_ping(settings: BaseConfig = Depends(get_settings)):
     return {
         "status": "success",
         "message": "pong!",

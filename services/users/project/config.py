@@ -2,13 +2,14 @@
 
 import os
 
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
 class BaseConfig(BaseSettings):
     TESTING: bool = False
     ENVIRONMENT: str = "dev"
-    DATABASE_URL: str = os.environ.get("DATABASE_URL")
+    DATABASE_URL: str | None = None
 
 
 class DevelopmentConfig(BaseConfig):
@@ -16,8 +17,10 @@ class DevelopmentConfig(BaseConfig):
 
 
 class TestingConfig(BaseConfig):
+    __test__ = False  # Tell pytest this is not a test class
+
     TESTING: bool = True
-    DATABASE_URL: str = os.environ.get("DATABASE_TEST_URL")
+    DATABASE_URL: str | None = Field(default=None, validation_alias="DATABASE_TEST_URL")
 
 
 class ProductionConfig(BaseConfig):
