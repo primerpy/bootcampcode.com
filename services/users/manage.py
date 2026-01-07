@@ -1,7 +1,7 @@
 import sys
 
 from project.db import Base, SessionLocal, engine
-from project.models import User
+from project.api.models immport User
 
 
 def recreate_db():
