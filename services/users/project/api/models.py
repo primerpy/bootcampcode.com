@@ -1,3 +1,5 @@
+# services/users/project/api/models.py
+
 from sqlalchemy import Boolean, Column, Integer, String
 
 from project.db import Base
@@ -5,6 +7,7 @@ from project.db import Base
 
 class User(Base):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(128), nullable=False)
     email = Column(String(128), nullable=False)
@@ -13,3 +16,11 @@ class User(Base):
     def __init__(self, username, email):
         self.username = username
         self.email = email
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "active": self.active,
+        }
