@@ -51,6 +51,14 @@ def test_app(session):
     app.dependency_overrides.clear()
 
 
+@pytest.fixture
+def empty_db(session):
+    """Clear all users from the database for tests that need empty state."""
+    session.query(User).delete()
+    session.commit()
+    yield session
+
+
 def add_user(username: str, email: str) -> User:
     """Helper function to add a user directly to the test database."""
     db = TestSessionLocal()

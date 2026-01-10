@@ -1,7 +1,8 @@
 # services/users/project/api/users.py
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy import exc
 from sqlalchemy.orm import Session
 
@@ -11,6 +12,8 @@ from project.config import BaseConfig, get_settings
 from project.db import get_db
 
 router = APIRouter()
+
+templates = Jinja2Templates(directory="project/api/templates")
 
 
 @router.get("/users/ping")
@@ -63,12 +66,36 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
         },
     }
 
+
 @router.get("/users")
 def get_all_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
-    return {
-        "status": "success",
-        "data": {
-            "users": [user.to_json() for user in users]
-        }
-    }
+    return {"status": "success", "data": {"users": [user.to_json() for user in users]}}
+
+
+@router.get("/")
+def index(request: Request, db: Session = Depends(get_db)):
+    users = db.query(User).all()
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "users": users}
+    )
+
+
+@router.post("/")
+def add_user_via_form(
+    request: Request,
+    username: str = Form(...),
+    email: str = Form(...),
+    db: Session = Depends(get_db),
+):
+    try:
+        user = User(username=username, email=email)
+        db.add(user)
+        db.commit()
+    except exc.IntegrityError:
+        db.rollback()
+
+    users = db.query(User).all()
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "users": users}
+    )

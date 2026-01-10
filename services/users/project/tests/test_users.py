@@ -1,4 +1,7 @@
 # services/users/project/tests/test_users.py
+import pytest
+
+from project.api.models import User
 from project.tests.conftest import add_user
 
 
@@ -63,12 +66,42 @@ def test_single_user_incorrect_id(test_app):
     assert data["status"] == "fail"
 
 
-def test_all_users(test_app):
-    """Ensure get all users behaves correctly."""
-    add_user("harry", "harry@testdriven.io")
-    add_user("ron", "ron@testdriven.io")
-    response = test_app.get("/users")
-    data = response.json()
+@pytest.fixture
+def empty_db(session):
+    """Fixture to ensure the database is empty for specific tests."""
+    session.query(User).delete()
+    session.commit()
+    yield session
+
+
+def test_main_no_users(test_app, empty_db):
+    """Ensure the main route behaves correctly when no users exist."""
+    response = test_app.get("/")
     assert response.status_code == 200
-    assert len(data["data"]["users"]) >= 2
-    assert data["status"] == "success"
+    assert "All Users" in response.text
+    assert "No users found" in response.text
+
+
+def test_main_with_users(test_app):
+    """Ensure the main route behaves correctly when users exist."""
+    add_user("primerpy", "info@primerpy.com")
+    add_user("fletcher", "fletcher@notreal.com")
+
+    response = test_app.get("/")
+    assert response.status_code == 200
+    assert "All Users" in response.text
+    assert "No users found" not in response.text
+    assert "primerpy" in response.text
+    assert "fletcher" in response.text
+
+
+def test_main_add_user(test_app):
+    """Ensure a new user can be added via the HTML form."""
+    response = test_app.post(
+        "/",
+        data={"username": "primerpy", "email": "info@primerpy.com"},
+        follow_redirects=True,
+    )
+    assert response.status_code == 200
+    assert "All Users" in response.text
+    assert "primerpy" in response.text

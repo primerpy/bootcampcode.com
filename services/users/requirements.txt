@@ -56,8 +56,10 @@ idna==3.11
     #   httpx
 iniconfig==2.3.0
     # via pytest
-jinja2==3.1.6
-    # via fastapi
+jinja2==3.1.5
+    # via
+    #   -r services/users/requirements.in
+    #   fastapi
 markdown-it-py==4.0.0
     # via rich
 markupsafe==3.0.3
@@ -98,8 +100,10 @@ python-dotenv==1.2.1
     # via
     #   pydantic-settings
     #   uvicorn
-python-multipart==0.0.21
-    # via fastapi
+python-multipart==0.0.20
+    # via
+    #   -r services/users/requirements.in
+    #   fastapi
 pyyaml==6.0.3
     # via uvicorn
 rich==14.2.0
