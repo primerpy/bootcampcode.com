@@ -1,0 +1,25 @@
+# docker-compose-prod.yml
+
+services:
+  users:
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile
+    ports:
+      - '8001:8000'
+    environment:
+      - ENVIRONMENT=prod
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@users-db:5432/users_prod
+      - DATABASE_TEST_URL=postgresql+psycopg://postgres:postgres@users-db:5432/users_test
+    depends_on:
+      - users-db
+
+  users-db:
+    build:
+      context: ./services/users/project/db
+      dockerfile: Dockerfile
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

@@ -62,6 +62,7 @@ def test_single_user_incorrect_id(test_app):
     assert "User does not exist" in data["message"]
     assert data["status"] == "fail"
 
+
 def test_all_users(test_app):
     """Ensure get all users behaves correctly."""
     add_user("harry", "harry@testdriven.io")
