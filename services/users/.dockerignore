@@ -13,3 +13,7 @@ __pycache__/
 .dockerignore
 Dockerfile
 Dockerfile-prod
+
+htmlcov/
+.coverage
+.pytest_cache

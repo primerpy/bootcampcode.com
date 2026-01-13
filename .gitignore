@@ -13,3 +13,7 @@ __pycache__/
 .DS_Store
 CLAUDE.md
 docs/
+
+htmlcov/
+.coverage
+.pytest_cache

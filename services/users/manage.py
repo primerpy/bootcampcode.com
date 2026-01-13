@@ -1,9 +1,10 @@
 # services/users/manage.py
 
-import sys
 import subprocess
-from project.db import Base, engine, SessionLocal
+import sys
+
 from project.api.models import User
+from project.db import Base, SessionLocal, engine
 
 
 def recreate_db():
@@ -15,8 +16,8 @@ def recreate_db():
 def seed_db():
     db = SessionLocal()
     try:
-        user1 = User(username='primerpy', email="primerpy@primerpy.com")
-        user2 = User(username='primerpy2', email="primerpy2@primerpy.com")
+        user1 = User(username="primerpy", email="primerpy@primerpy.com")
+        user2 = User(username="primerpy2", email="primerpy2@primerpy.com")
         db.add(user1)
         db.add(user2)
         db.commit()
@@ -31,6 +32,25 @@ def test():
     sys.exit(result.returncode)
 
 
+def cov():
+    """
+    Run pytest with coverage
+    """
+    result = subprocess.run(
+        ["pytest", "--cov=project", "--cov-report=term-missing", "--cov-report=html"],
+        capture_output=False,
+    )
+    sys.exit(result.returncode)
+
+
+def lint():
+    """
+    Run ruff linter
+    """
+    result = subprocess.run(["ruff", "check", "project"], capture_output=False)
+    sys.exit(result.returncode)
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         command = sys.argv[1]
@@ -40,6 +60,10 @@ if __name__ == "__main__":
             seed_db()
         elif command == "test":
             test()
+        elif command == "cov":
+            cov()
+        elif command == "lint":
+            lint()
         else:
             print(f"Unknown command: {command}")
     else:

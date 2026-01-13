@@ -1,0 +1,61 @@
+# services/users/pyproject.toml
+
+[tool.pytest.ini_options]
+testpaths = ["project/tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v"
+
+[tool.coverage.run]
+branch = true
+source = ["project"]
+omit = [
+    "project/tests/*",
+    "project/config.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+
+[tool.ruff]
+# Exclude common non-source directories
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "build",
+    "dist",
+    "htmlcov",
+]
+
+# Same as Black
+line-length = 88
+
+# Target Python 3.12
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable Pyflakes (F) and pycodestyle (E, W) rules
+# Also enable isort (I) for import sorting
+select = ["E", "F", "W", "I"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore unused imports in __init__.py files
+"__init__.py" = ["F401"]
+# Ignore import order in manage.py (we import after coverage starts in Flask)
+"manage.py" = ["E402"]
+# Ignore line length in test files for readability
+"test_*.py" = ["E501"]
+
+[tool.ruff.lint.isort]
+# Group imports: standard library, third-party, local
+known-first-party = ["project"]
