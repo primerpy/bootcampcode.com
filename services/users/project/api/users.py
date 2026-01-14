@@ -76,9 +76,7 @@ def get_all_users(db: Session = Depends(get_db)):
 @router.get("/")
 def index(request: Request, db: Session = Depends(get_db)):
     users = db.query(User).all()
-    return templates.TemplateResponse(
-        "index.html", {"request": request, "users": users}
-    )
+    return templates.TemplateResponse(request, "index.html", {"users": users})
 
 
 @router.post("/")
@@ -96,6 +94,4 @@ def add_user_via_form(
         db.rollback()
 
     users = db.query(User).all()
-    return templates.TemplateResponse(
-        "index.html", {"request": request, "users": users}
-    )
+    return templates.TemplateResponse(request, "index.html", {"users": users})

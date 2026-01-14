@@ -1,0 +1,41 @@
+# .github/workflows/main.yml
+
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and start containers
+        run: docker compose up -d --build
+
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for services to be ready..."
+          sleep 10
+
+      - name: Create database tables
+        run: docker compose exec -T users python manage.py recreate_db
+
+      - name: Run tests with coverage
+        run: docker compose exec -T users pytest --cov=project --cov-report=term-missing --cov-fail-under=80
+
+      - name: Run linter
+        run: docker compose exec -T users ruff check project
+
+      - name: Tear down containers
+        if: always()
+        run: docker compose down -v
