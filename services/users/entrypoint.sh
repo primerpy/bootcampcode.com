@@ -9,4 +9,4 @@ done
 
 echo "PostgreSQL started"
 
-fastapi run project --host 0.0.0.0 --port 8000
+fastapi dev project --host 0.0.0.0 --port 8000

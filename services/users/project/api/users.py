@@ -1,5 +1,7 @@
 # services/users/project/api/users.py
 
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -95,3 +97,23 @@ def add_user_via_form(
 
     users = db.query(User).all()
     return templates.TemplateResponse(request, "index.html", {"users": users})
+
+
+@router.get("/health")
+def health_check(
+    db: Session = Depends(get_db), settings: BaseConfig = Depends(get_settings)
+):
+    """Health check endpoint for monitoring and debugging."""
+    # Test database connection
+    try:
+        db.execute("SELECT 1")
+        db_status = "healthy"
+    except Exception as e:
+        db_status = f"unhealthy: {str(e)}"
+
+    return {
+        "status": "healthy" if db_status == "healthy" else "unhealthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "environment": settings.ENVIRONMENT,
+        "database": db_status,
+    }

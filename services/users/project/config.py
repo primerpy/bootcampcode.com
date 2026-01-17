@@ -1,5 +1,6 @@
 # services/users/project/config.py
 
+import logging
 import os
 
 from pydantic import Field
@@ -13,7 +14,9 @@ class BaseConfig(BaseSettings):
 
 
 class DevelopmentConfig(BaseConfig):
-    pass
+    ENVIRONMENT: str = "dev"
+    LOG_LEVEL: str = "DEBUG"
+    DEBUG: bool = True
 
 
 class TestingConfig(BaseConfig):
@@ -24,7 +27,9 @@ class TestingConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-    pass
+    ENVIRONMENT: str = "prod"
+    LOG_LEVEL: str = "DEBUG"
+    DEBUG: bool = True
 
 
 def get_settings():
@@ -34,3 +39,16 @@ def get_settings():
     elif env == "test":
         return TestingConfig()
     return DevelopmentConfig()
+
+
+def configure_logging(settings: BaseConfig):
+    logging.basicConfig(
+        level=getattr(logging, settings.LOG_LEVEL),
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
+    logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
+    logging.getLogger("sqlalchemy.engine").setLevel(
+        logging.DEBUG if settings.DEBUG else logging.WARNING
+    )
