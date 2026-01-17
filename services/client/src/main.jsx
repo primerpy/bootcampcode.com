@@ -22,7 +22,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-21">
+    <div className="container mx-auto px-4 py-8 max-w-2xl">
       <header className="mb-8 border-b pb-4 border-gray-200">
         <h1 className="text-4xl font-extrabold text-blue-600 tracking-tight">
           All Users
