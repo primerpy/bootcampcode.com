@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import axios from "axios";
+import UsersList from "./components/UsersList";
+import AddUser from "./components/AddUser";
 
 const App = () => {
   const [users, setUsers] = useState([]);
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
   const getUsers = () => {
     const apiUrl = import.meta.env.VITE_APP_USERS_SERVICE_URL;
@@ -21,6 +26,30 @@ const App = () => {
     getUsers();
   }, []);
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "username") setUsername(value);
+    if (name === "email") setEmail(value);
+  };
+
+  const addUser = (event) => {
+    event.preventDefault();
+    const data = {
+      username: username,
+      email: email,
+    };
+    axios
+      .post(`${import.meta.env.VITE_APP_USERS_SERVICE_URL}/users`, data)
+      .then(() => {
+        getUsers();
+        setUsername("");
+        setEmail("");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <header className="mb-8 border-b pb-4 border-gray-200">
@@ -28,17 +57,13 @@ const App = () => {
           All Users
         </h1>
       </header>
-      <div className="space-y-4">
-        {users.map((user) => (
-          <div
-            key={user.id}
-            className="p-4 bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
-          >
-            <h4 className="font-bold text-lg text-gray-800">{user.username}</h4>
-            <p className="text-sm text-gray-500">{user.email}</p>
-          </div>
-        ))}
-      </div>
+      <AddUser
+        addUser={addUser}
+        username={username}
+        email={email}
+        handleChange={handleChange}
+      />
+      <UsersList users={users} />
     </div>
   );
 };
