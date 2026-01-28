@@ -23,3 +23,19 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    volumes:
+      - users-db-data:/var/lib/postgresql/data
+
+  client:
+    build:
+      context: ./services/client
+      dockerfile: Dockerfile.prod
+      args:
+        - VITE_APP_USERS_SERVICE_URL=http://localhost/users
+    ports:
+      - '80:80'
+    depends_on:
+      - users
+
+volumes:
+  users-db-data:

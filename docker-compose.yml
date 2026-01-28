@@ -25,3 +25,34 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    volumes:
+      - users-db-data:/var/lib/postgresql/data
+
+  client:
+    build:
+      context: ./services/client/
+      dockerfile: Dockerfile
+
+    volumes:
+      - "./services/client:/usr/src/app"
+      - "/usr/src/app/node_modules"
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - VITE_APP_USERS_SERVICE_URL=http://localhost:8001
+    depends_on:
+      - users
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - "./services/nginx/nginx.conf:/etc/nginx/conf.d/default.conf"
+    depends_on:
+      - users
+      - client
+
+volumes:
+  users-db-data:
