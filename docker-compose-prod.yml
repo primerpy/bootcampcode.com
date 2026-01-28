@@ -31,7 +31,7 @@ services:
       context: ./services/client
       dockerfile: Dockerfile.prod
       args:
-        - VITE_APP_USERS_SERVICE_URL=http://localhost/users
+        - VITE_APP_USERS_SERVICE_URL=
     ports:
       - '80:80'
     depends_on:
